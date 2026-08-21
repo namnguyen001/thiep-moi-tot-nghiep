@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Thư mời tham dự Lễ Tốt Nghiệp</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- 1. ENVELOPE OPENING COVER -->
+    <div id="envelopeOverlay" class="envelope-overlay">
+        <div aria-hidden="true" class="envelope-border-decoration"></div>
+        <div class="envelope-inner">
+            <img src="/static/assets/corner-cap-line.webp" alt="" class="env-decor-cap">
+            
+            <img src="/static/assets/graduation-title-v3-clean.webp" alt="Tốt Nghiệp" class="env-title-img">
+            <h1 id="envPersonName" class="envelope-title text-gold-gradient">Nguyễn Hoài Nam</h1>
+            
+            <div id="envGuestBadge" class="env-guest-badge" style="display: none;">
+                <span class="guest-name-highlight">
+                    <i class="fa-solid fa-envelope-open-text"></i> Kính mời: <span id="envGuestName">Khách Quý</span>
+                </span>
+            </div>
+
+            <button id="btnOpenEnvelope" class="btn-open-card">
+                MỞ THIỆP
+                <svg viewBox="0 0 24 24" class="btn-arrow-icon" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. FLOATING AUDIO PLAYER & HIDDEN PLAYERS -->
+    <div class="music-player-btn" id="musicPlayerBtn">
+        <div class="music-circle" id="musicCircle">
+            <i class="fa-solid fa-music" id="musicIcon"></i>
+        </div>
+        <div class="music-tooltip" id="musicTooltip">Phát nhạc nền</div>
+        <!-- MP3 Fallback Player -->
+        <audio id="bgAudio" loop preload="auto"></audio>
+        <!-- YouTube Hidden IFrame Player Container -->
+        <div id="ytPlayerContainer" class="yt-player-hidden">
+            <div id="ytPlayer"></div>
+        </div>
+    </div>
+
+    <!-- 3. PERSONALIZED GUEST BAR -->
+    <div id="guestBanner" class="guest-banner" style="display: none;">
+        <span><i class="fa-solid fa-sparkles"></i> Kính mời:</span>
+        <span class="guest-name-highlight" id="guestBannerName">Bạn Trân Quý</span>
+        <span id="guestBannerRole" style="font-size: 12px; opacity: 0.85;"></span>
+    </div>
+
+    <!-- MAIN CARD CONTAINER (Max-width 520px) -->
+    <main class="main-card-wrapper">
+
+        <!-- DECORATIVE ASSETS HERO BACKGROUND -->
+        <img src="/static/assets/corner-cap-line.webp" alt="" class="decor-corner-cap">
+        <img src="/static/assets/corner-graduation-line.webp" alt="" class="decor-corner-grad">
+        <img src="/static/assets/top-plane.webp" alt="" class="decor-top-plane">
+
+        <!-- 4. HERO SECTION -->
+        <section class="hero-section">
+            <img src="/static/assets/graduation-title-v3-clean.webp" alt="Thư mời tham dự Tốt Nghiệp" class="hero-title-img">
+            
+            <h1 class="hero-person-name text-gold-gradient" id="heroPersonName">Nguyễn Hoài Nam</h1>
+            <p class="hero-school" id="heroSchoolName">Trường Đại Học Giao Thông Vận Tải</p>
+
+            <!-- ROTATED GOLD PHOTO FRAME WITH SVG STROKES & GLOW -->
+            <div class="photo-frame-container">
+                <svg viewBox="0 0 100 100" class="frame-svg-back" aria-hidden="true" fill="none">
+                    <defs>
+                        <linearGradient id="photo-frame-gold-back" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#F6E7A5"></stop>
+                            <stop offset="35%" stop-color="#C89A37"></stop>
+                            <stop offset="70%" stop-color="#F1D378"></stop>
+                            <stop offset="100%" stop-color="#A8751E"></stop>
+                        </linearGradient>
+                        <filter id="photo-frame-glow-back" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="0.5" result="b"></feGaussianBlur>
+                            <feMerge>
+                                <feMergeNode in="b"></feMergeNode>
+                                <feMergeNode in="SourceGraphic"></feMergeNode>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="0" y="0" width="100" height="100" transform="rotate(3.5 50 50)" stroke="url(#photo-frame-gold-back)" stroke-width="0.45" opacity="0.8" filter="url(#photo-frame-glow-back)"></rect>
+                </svg>
+
+                <div class="photo-frame-img-box">
+                    <img id="heroImage" src="/static/assets/hero_nam.webp" alt="Nguyễn Hoài Nam">
+                </div>
+
+                <svg viewBox="0 0 100 100" class="frame-svg-front" aria-hidden="true" fill="none">
+                    <defs>
+                        <linearGradient id="photo-frame-gold-front" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#F6E7A5"></stop>
+                            <stop offset="35%" stop-color="#C89A37"></stop>
+                            <stop offset="70%" stop-color="#F1D378"></stop>
+                            <stop offset="100%" stop-color="#A8751E"></stop>
+                        </linearGradient>
+                        <filter id="photo-frame-glow-front" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="0.5" result="b"></feGaussianBlur>
+                            <feMerge>
+                                <feMergeNode in="b"></feMergeNode>
+                                <feMergeNode in="SourceGraphic"></feMergeNode>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="0" y="0" width="100" height="100" stroke="url(#photo-frame-gold-front)" stroke-width="0.5" filter="url(#photo-frame-glow-front)"></rect>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 5. DATE & TIME SECTION -->
+        <section class="datetime-section">
+            <div class="datetime-grid">
+                <div class="datetime-box">
+                    <div class="icon-gold-circle">
+                        <svg viewBox="0 0 24 24" class="svg-gold-icon" fill="none" stroke="#C9A24B" stroke-width="1.5">
+                            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <p class="datetime-label">NGÀY</p>
+                    <p id="eventDayOfWeek" class="datetime-val-day">Thứ Hai</p>
+                    <p id="eventDateFull" class="datetime-val-date">07.09.2026</p>
+                </div>
+
+                <div class="datetime-box">
+                    <div class="icon-gold-circle">
+                        <svg viewBox="0 0 24 24" class="svg-gold-icon" fill="none" stroke="#C9A24B" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <p class="datetime-label">GIỜ</p>
+                    <p id="eventTimeFull" class="datetime-val-time">16:00</p>
+                </div>
+            </div>
+
+            <!-- 6. CALENDAR WIDGET -->
+            <div class="calendar-card">
+                <div class="calendar-header" id="calendarMonthTitle">Tháng 9 / 2026</div>
+                <div class="calendar-divider"></div>
+                <div class="calendar-days-head">
+                    <div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div>T7</div><div>CN</div>
+                </div>
+                <div class="calendar-days-grid" id="calendarDaysGrid">
+                    <!-- Generated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. VENUE & GOOGLE MAPS -->
+        <section class="section-container">
+            <div class="icon-gold-circle">
+                <svg viewBox="0 0 24 24" class="svg-gold-icon" fill="none" stroke="#C9A24B" stroke-width="1.5">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </div>
+            <p class="section-sub-label">ĐỊA ĐIỂM</p>
+            <h2 id="venueName" class="venue-title">Trường Đại Học Giao Thông Vận Tải</h2>
+            <p id="venueAddress" class="venue-address">Số 3 Cầu Giấy, phường Láng, Hà Nội</p>
+
+            <div class="map-box">
+                <iframe id="mapFrame" src="https://maps.google.com/maps?q=Tr%C6%B0%E1%BB%9Dng%20%C4%90%E1%BA%A1i%20H%E1%BB%8Dc%20Giao%20Th%C3%B4ng%20V%E1%BA%ADn%20T%E1%BA%A3i%2C%20S%E1%BB%91%203%20C%E1%BA%A7u%20Gi%E1%BA%A5y%2C%20ph%C6%B0%E1%BB%9Dng%20L%C3%A1ng%2C%20H%E1%BA%A0%20N%E1%BB%99i&t=&z=15&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Google Maps"></iframe>
+            </div>
+
+            <a id="btnGoogleMaps" href="https://maps.app.goo.gl/" target="_blank" class="btn-gold-primary">
+                <i class="fa-solid fa-map-location-dot"></i> MỞ GOOGLE MAPS CHỈ ĐƯỜNG
+            </a>
+        </section>
+
+        <!-- 8. COUNTDOWN LET'S CELEBRATE -->
+        <section class="section-container countdown-section">
+            <img src="/static/assets/lets-celebrate.webp" alt="Let's celebrate" class="img-lets-celebrate">
+            <p class="countdown-subtitle">Đếm ngược đến ngày đặc biệt</p>
+            
+            <div class="countdown-grid">
+                <div>
+                    <div class="count-digit" id="cdDays">00</div>
+                    <div class="count-unit">Ngày</div>
+                </div>
+                <div>
+                    <div class="count-digit" id="cdHours">00</div>
+                    <div class="count-unit">Giờ</div>
+                </div>
+                <div>
+                    <div class="count-digit" id="cdMinutes">00</div>
+                    <div class="count-unit">Phút</div>
+                </div>
+                <div>
+                    <div class="count-digit" id="cdSeconds">00</div>
+                    <div class="count-unit">Giây</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. THƯ MỜI MESSAGE FRAME -->
+        <section class="section-message-frame">
+            <div class="message-frame-wrapper">
+                <img src="/static/assets/message-frame-v2-clean.webp" alt="" class="img-message-frame">
+                <div class="message-frame-content">
+                    <p class="message-text" id="customMessage">
+                        Sau 77 49 37 21 ngày ăn chơi tại UTC, Nguyễn Nam đã chính thức được đá ra khỏi trường. Rất mong có sự hiện diện của những người thương yêu để cùng chứng kiến khoảnh khắc chẳng mấy huy hoàng nhưng lại không thể thiếu này nhé.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. XÁC NHẬN THAM DỰ (RSVP) -->
+        <section class="section-container" id="rsvpSection">
+            <h2 class="section-heading text-gold-gradient"><i class="fa-regular fa-paper-plane"></i> Xác Nhận Tham Dự</h2>
+            <p class="section-subtext" style="margin-bottom: 20px;">Vui lòng xác nhận tham dự để tân cử nhân đón tiếp chu đáo nhất!</p>
+
+            <form id="rsvpForm">
+                <input type="text" id="rsvpName" class="form-input-dark" placeholder="Họ và tên của bạn *" required>
+                <input type="tel" id="rsvpPhone" class="form-input-dark" placeholder="Số điện thoại liên hệ">
+                
+                <div class="radio-attending-group">
+                    <label class="radio-label green">
+                        <input type="radio" name="attending" value="true" checked>
+                        <span> Sẽ tham dự</span>
+                    </label>
+                    <label class="radio-label red">
+                        <input type="radio" name="attending" value="false">
+                        <span> Rất tiếc không thể đến</span>
+                    </label>
+                </div>
+
+                <textarea id="rsvpNote" class="form-input-dark" rows="2" placeholder="Lời nhắn gửi..."></textarea>
+
+                <button type="submit" class="btn-gold-primary">
+                    GỬI XÁC NHẬN THAM DỰ
+                </button>
+            </form>
+        </section>
+
+        <!-- 11. SỔ LƯU BÚT / LỜI CHÚC -->
+        <section class="section-guestbook">
+            <h2 class="guestbook-title text-gold-gradient">Sổ lưu bút</h2>
+            
+            <div class="guestbook-box">
+                <input type="text" id="wishSender" class="guestbook-input" placeholder="Nhập tên của bạn" maxlength="100">
+                <textarea id="wishMessage" class="guestbook-textarea" placeholder="Nhập lời chúc của bạn" maxlength="500" rows="3"></textarea>
+                
+                <div class="guestbook-actions">
+                    <button type="button" id="btnSuggestWish" class="btn-suggest-bulb" title="Gợi ý lời chúc">💡</button>
+                    <button type="button" id="btnSubmitWish" class="btn-send-wish">Gửi lời chúc</button>
+                </div>
+            </div>
+
+            <div class="wishes-list" id="wishesList">
+                <!-- Injected dynamically -->
+            </div>
+        </section>
+
+        <!-- 12. DECORATIVE CONFETTI & FOOTER (Logo & Brand link removed) -->
+        <section class="footer-section">
+            <img src="/static/assets/gold-confetti-clean.webp" alt="" class="img-gold-confetti">
+            <img src="/static/assets/footer-doodle.webp" alt="" class="img-footer-doodle">
+        </section>
+
+    </main>
+
+    <!-- SUGGESTION WISH MODAL -->
+    <div id="suggestionModal" class="suggestion-modal">
+        <div class="suggestion-box">
+            <h3 class="suggestion-title">Gợi Ý Lời Chúc Tốt Nghiệp 💡</h3>
+            <div id="suggestionsList">
+                <div class="suggestion-chip">🎓 Chúc mừng tân cử nhân! Chúc cậu chặng đường phía trước luôn rực rỡ và gặt hái thật nhiều thành công!</div>
+                <div class="suggestion-chip">🌟 Tốt nghiệp rồi quẩy thôi! Tự hào về cậu rất nhiều, luôn giữ vững ngọn lửa nhiệt huyết nhé!</div>
+                <div class="suggestion-chip">✨ Tấm bằng tốt nghiệp là mốc son đẹp đẽ. Chúc cậu sớm tìm được công việc mơ ước và vươn cao vươn xa hơn nữa!</div>
+                <div class="suggestion-chip">❤️ Chúc bạn tôi luôn xinh đẹp, tự tin và vững bước trên hành trình mới tràn ngập niềm vui!</div>
+            </div>
+            <button id="btnCloseSuggest" class="btn-gold-primary" style="margin-top: 16px;">ĐÓNG</button>
+        </div>
+    </div>
+
+    <!-- FLOATING RSVP BUTTON -->
+    <button id="btnFloatRsvp" class="btn-rsvp-float">
+        <i class="fa-solid fa-calendar-check"></i> XÁC NHẬN THAM DỰ
+    </button>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast">Đã gửi thành công!</div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

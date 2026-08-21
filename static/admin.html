@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Lý Thiệp Tốt Nghiệp Admin (Multi-Card)</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #C9A24B;
+            --primary-dark: #A8751E;
+            --bg: #F4F6F8;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+            --border: #E5E7EB;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 60px; }
+
+        /* HEADER */
+        .admin-header {
+            background: #111827;
+            color: #FFF;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .admin-title {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-selector-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1F2937;
+            padding: 6px 14px;
+            border-radius: 10px;
+            border: 1px solid #374151;
+        }
+
+        /* CONTAINER & NAV TABS */
+        .admin-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #64748B;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover { background: #E2E8F0; color: var(--text); }
+        .tab-btn.active { background: var(--primary); color: #000; font-weight: 700; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* CARDS & FORMS */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #0F172A;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-weight: 600; font-size: 13.5px; margin-bottom: 6px; color: #475569; }
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #F8FAFC;
+        }
+        .form-input:focus, .form-textarea:focus { border-color: var(--primary); background: #FFF; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary { background: var(--primary); color: #000; font-weight: 700; }
+        .btn-primary:hover { background: var(--primary-dark); color: #FFF; }
+        .btn-danger { background: #EF4444; color: #FFF; }
+        .btn-danger:hover { background: #DC2626; }
+        .btn-secondary { background: #64748B; color: #FFF; }
+
+        /* TABLES */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th { background: #F1F5F9; font-weight: 700; color: #334155; }
+        .data-table tr:hover { background: #F8FAFC; }
+
+        /* PASSCODE MODAL */
+        .passcode-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .passcode-box {
+            background: #FFF;
+            padding: 32px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .admin-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #111827;
+            color: #FFF;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            z-index: 10000;
+        }
+
+        .admin-toast.show { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- PASSCODE LOGIN MODAL -->
+    <div id="passcodeModal" class="passcode-modal">
+        <div class="passcode-box">
+            <div style="font-size: 40px; color: var(--primary); margin-bottom: 12px;">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Đăng Nhập Admin</h2>
+            <p style="font-size: 13.5px; color: #64748B; margin-bottom: 20px;">Vui lòng nhập mật khẩu Quản trị Admin</p>
+            
+            <form id="passcodeForm">
+                <input type="password" id="inputPasscode" class="form-input" placeholder="Mật khẩu Admin (Mặc định: 123456)" required style="text-align: center; font-size: 16px; margin-bottom: 16px;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fa-solid fa-right-to-bracket"></i> ĐĂNG NHẬP
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN HEADER -->
+    <header class="admin-header">
+        <div class="admin-title">
+            <i class="fa-solid fa-layer-group" style="color: var(--primary);"></i>
+            <span>Quản Lý Thiệp Tốt Nghiệp (Multi-Card)</span>
+        </div>
+
+        <div class="card-selector-bar">
+            <span style="font-size: 13px; color: #9CA3AF;">Đang chọn thiệp:</span>
+            <select id="cardSelectDropdown" class="form-select" style="width: auto; padding: 4px 10px; font-weight: 700; background: #374151; color: #FFF; border: none;">
+                <!-- Options injected dynamically -->
+            </select>
+        </div>
+
+        <div>
+            <button id="btnCreateNewCardModal" class="btn btn-primary" style="font-size: 13px;">
+                <i class="fa-solid fa-plus"></i> Tạo Thiệp Mới
+            </button>
+            <a id="btnViewCurrentCard" href="/" target="_blank" class="btn btn-secondary" style="font-size: 13px; margin-left: 6px;">
+                <i class="fa-solid fa-eye"></i> Xem Thiệp
+            </a>
+            <button id="btnLogout" class="btn btn-danger" style="font-size: 13px; margin-left: 6px;">
+                <i class="fa-solid fa-power-off"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ADMIN CONTAINER -->
+    <main class="admin-container">
+        
+        <!-- NAV TABS -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="tab-cards-list">
+                <i class="fa-solid fa-list-check"></i> Tất Cả Các Thiệp
+            </button>
+            <button class="tab-btn" data-tab="tab-config">
+                <i class="fa-solid fa-sliders"></i> Cấu Hình Thiệp Đang Chọn
+            </button>
+            <button class="tab-btn" data-tab="tab-photos">
+                <i class="fa-solid fa-images"></i> Quản Lý Album Ảnh
+            </button>
+            <button class="tab-btn" data-tab="tab-guests">
+                <i class="fa-solid fa-users"></i> Khách Mời & Link/QR
+            </button>
+            <button class="tab-btn" data-tab="tab-rsvps">
+                <i class="fa-solid fa-clipboard-check"></i> RSVPs & Lời Chúc
+            </button>
+        </nav>
+
+        <!-- TAB 0: TẤT CẢ CÁC THIỆP -->
+        <section id="tab-cards-list" class="tab-content active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 class="card-title" style="margin: 0;"><i class="fa-solid fa-folder-open" style="color: var(--primary);"></i> Danh Sách Các Thiệp Mời Đã Tạo</h3>
+                    <button class="btn btn-primary btn-trigger-new-card">
+                        <i class="fa-solid fa-plus"></i> TẠO THIỆP MỚI
+                    </button>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Tân Cử Nhân</th>
+                            <th>Slug (Đường Link)</th>
+                            <th>Trường Học</th>
+                            <th>Ngày Lễ</th>
+                            <th>Lượt Xem</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allCardsTableBody">
+                        <!-- Injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 1: CẤU HÌNH THIỆP ĐANG CHỌN -->
+        <section id="tab-config" class="tab-content">
+            <form id="configForm" class="card">
+                <h3 class="card-title"><i class="fa-solid fa-user-graduate" style="color: var(--primary);"></i> Cấu Hình Thiệp: <span id="editingCardNameTitle" style="color: var(--primary-dark);">...</span></h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tên Tân Cử Nhân *</label>
+                        <input type="text" id="cfgPersonName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đường Link Slug (Viết liền không dấu, duy nhất) *</label>
+                        <input type="text" id="cfgSlug" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên Bằng Cấp / Chuyên Ngành *</label>
+                        <input type="text" id="cfgDegreeTitle" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên Trường Đại Học *</label>
+                        <input type="text" id="cfgSchoolName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Thời Gian Diễn Ra (YYYY-MM-DDTHH:MM) *</label>
+                        <input type="datetime-local" id="cfgEventDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa Điểm Tổ Chức *</label>
+                        <input type="text" id="cfgEventLocation" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Địa Chỉ Chi Tiết *</label>
+                        <input type="text" id="cfgEventAddress" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nội Dung Thư Mời Tốt Nghiệp (Message) *</label>
+                    <textarea id="cfgCustomMessage" class="form-textarea" rows="4" required></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Google Maps Embed URL *</label>
+                        <input type="text" id="cfgMapsEmbed" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Google Maps Share Link *</label>
+                        <input type="text" id="cfgMapsLink" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Đường Link Nhạc Nền (Hỗ trợ Link YouTube hoặc MP3) *</label>
+                    <input type="text" id="cfgMusicUrl" class="form-input" placeholder="Ví dụ: https://youtu.be/3Kxf2dHlDpQ hoặc link file MP3" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Tải Ảnh Bìa Tân Cử Nhân (Hero Image)</label>
+                        <input type="file" id="heroFileInput" class="form-input" accept="image/*">
+                        <input type="hidden" id="cfgHeroImage">
+                        <div id="heroPreview" style="margin-top: 8px;"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
+                    <i class="fa-solid fa-floppy-disk"></i> LƯU THÔNG TIN THIỆP
+                </button>
+            </form>
+        </section>
+
+        <!-- TAB 2: QUẢN LÝ ALBUM ẢNH -->
+        <section id="tab-photos" class="tab-content">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Tải Ảnh Mới Lên Album</h3>
+                <form id="uploadPhotoForm" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; min-width: 240px; margin: 0;">
+                        <label class="form-label">Chọn File Ảnh</label>
+                        <input type="file" id="photoFileInput" class="form-input" accept="image/*">
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 240px; margin: 0;">
+                        <label class="form-label">Hoặc Nhập URL Ảnh</label>
+                        <input type="text" id="photoUrlInput" class="form-input" placeholder="https://...">
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 240px; margin: 0;">
+                        <label class="form-label">Chú thích ảnh</label>
+                        <input type="text" id="photoCaptionInput" class="form-input" placeholder="Ví dụ: Tung mũ cùng bạn bè">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> THÊM ẢNH
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-images" style="color: var(--primary);"></i> Album Ảnh Của Thiệp</h3>
+                <div id="photosAdminGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 16px;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: KHÁCH MỜI & LINK / QR -->
+        <section id="tab-guests" class="tab-content">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Tạo Link Mời Cá Nhân Hóa Cho Thiệp Này</h3>
+                <form id="addGuestForm" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
+                        <label class="form-label">Tên Khách Mời *</label>
+                        <input type="text" id="guestNameInput" class="form-input" placeholder="Ví dụ: Anh Tuấn" required>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 180px; margin: 0;">
+                        <label class="form-label">Vai Trò / Quan Hệ</label>
+                        <input type="text" id="guestRoleInput" class="form-input" placeholder="Bạn thân, Bạn cùng lớp">
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 180px; margin: 0;">
+                        <label class="form-label">SĐT (Tùy chọn)</label>
+                        <input type="tel" id="guestPhoneInput" class="form-input">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-link"></i> TẠO LINK MỜI
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-list-check" style="color: var(--primary);"></i> Danh Sách Khách Mời Thiệp Đang Chọn</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Khách</th>
+                            <th>Vai Trò</th>
+                            <th>SĐT</th>
+                            <th>Đường Link Cá Nhân Hóa</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guestTableBody">
+                        <!-- Injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 4: RSVPS & LỜI CHÚC -->
+        <section id="tab-rsvps" class="tab-content">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-clipboard-list" style="color: var(--primary);"></i> Danh Sách Phản Hồi RSVP Thiệp Đang Chọn</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Khách</th>
+                            <th>SĐT</th>
+                            <th>Trạng Thái</th>
+                            <th>Số Người</th>
+                            <th>Lời Nhắn</th>
+                            <th>Ngày Phản Hồi</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rsvpTableBody">
+                        <!-- Injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-comments" style="color: var(--primary);"></i> Sổ Lưu Bút / Lời Chúc Thiệp Đang Chọn</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Người Gửi</th>
+                            <th>Lời Chúc</th>
+                            <th>Thời Gian</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wishesTableBody">
+                        <!-- Injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CREATE NEW CARD MODAL -->
+    <div id="newCardModal" class="passcode-modal" style="display: none;">
+        <div class="passcode-box" style="max-width: 550px; text-align: left;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; text-align: center;">Tạo Thiệp Mời Mới</h3>
+            <form id="newCardForm">
+                <div class="form-group">
+                    <label class="form-label">Tên Tân Cử Nhân *</label>
+                    <input type="text" id="newPersonName" class="form-input" placeholder="Ví dụ: Nguyễn Hoài Nam" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Slug Định Danh Link (Viết liền không dấu) *</label>
+                    <input type="text" id="newSlug" class="form-input" placeholder="Ví dụ: nguyen-hoai-nam-utc" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Bằng Cấp / Ngành Học</label>
+                        <input type="text" id="newDegreeTitle" class="form-input" value="Kỹ sư Cầu Đường">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên Trường Đại Học *</label>
+                        <input type="text" id="newSchoolName" class="form-input" placeholder="ĐH Giao Thông Vận Tải" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Thời Gian Diễn Ra Lễ *</label>
+                    <input type="datetime-local" id="newEventDate" class="form-input" value="2026-09-07T16:00" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Địa Điểm Tổ Chức *</label>
+                    <input type="text" id="newEventLocation" class="form-input" placeholder="Trường ĐH Giao Thông Vận Tải" required>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button type="button" id="btnCloseNewCard" class="btn btn-secondary" style="flex: 1; justify-content: center;">HỦY</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1; justify-content: center;">TẠO THIỆP MỚI</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- QR CODE MODAL -->
+    <div id="qrModal" class="passcode-modal" style="display: none;">
+        <div class="passcode-box">
+            <h3 id="qrGuestNameTitle" style="font-size: 18px; margin-bottom: 12px;">Mã QR Thiệp Mời</h3>
+            <img id="qrImg" src="" alt="QR Code" style="width: 220px; height: 220px; margin: 0 auto; display: block; border-radius: 12px; border: 1px solid #CBD5E1;">
+            <p id="qrLinkText" style="font-size: 12px; color: #64748B; word-break: break-all; margin: 12px 0;"></p>
+            <button id="btnCloseQr" class="btn btn-secondary" style="width: 100%; justify-content: center;">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div id="adminToast" class="admin-toast">Đã cập nhật thành công!</div>
+
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>
