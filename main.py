@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 
-from database import engine, Base, get_db
+from database import engine, Base, get_db, SessionLocal
 import models
 import schemas
 
@@ -15,7 +15,6 @@ models.Base.metadata.create_all(bind=engine)
 
 # Auto-seed data if database is empty
 def seed_database_if_empty():
-    from sqlalchemy.orm import Session
     db = SessionLocal()
     try:
         # Check if any cards exist
