@@ -14,18 +14,25 @@ import schemas
 models.Base.metadata.create_all(bind=engine)
 
 # Auto-seed data if database is empty
-from sqlalchemy.orm import Session
-db = SessionLocal()
-try:
-    # Check if any cards exist
-    card_count = db.query(models.InvitationCard).count()
-    if card_count == 0:
-        print("Database is empty, running seed data...")
-        import seed
-        seed.seed_data()
-        print("Seed data completed!")
-finally:
-    db.close()
+def seed_database_if_empty():
+    from sqlalchemy.orm import Session
+    db = SessionLocal()
+    try:
+        # Check if any cards exist
+        card_count = db.query(models.InvitationCard).count()
+        if card_count == 0:
+            print("Database is empty, running seed data...")
+            # Import and run seed
+            import seed
+            seed.seed_data()
+            print("Seed data completed!")
+    except Exception as e:
+        print(f"Error seeding database: {e}")
+    finally:
+        db.close()
+
+# Run seed on startup
+seed_database_if_empty()
 
 app = FastAPI(title="IvyInvi Multi-Card Graduation Invitation API", version="2.0.0")
 
