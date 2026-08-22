@@ -218,19 +218,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Guest personalization
     const urlParams = new URLSearchParams(window.location.search);
     const guestNameParam = urlParams.get("guest");
-    const guestRoleParam = urlParams.get("role") || urlParams.get("tag");
 
     if (guestNameParam) {
         // Decode URL parameter to handle Vietnamese characters properly
         const decodedGuestName = decodeURIComponent(guestNameParam);
-        const decodedGuestRole = guestRoleParam ? decodeURIComponent(guestRoleParam) : "";
 
         guestBanner.style.display = "flex";
         guestBannerName.textContent = decodedGuestName;
-        if (decodedGuestRole) guestBannerRole.textContent = `(${decodedGuestRole})`;
 
         envGuestBadge.style.display = "inline-block";
-        envGuestName.textContent = decodedGuestName + (decodedGuestRole ? ` (${decodedGuestRole})` : "");
+        envGuestName.textContent = decodedGuestName;
 
         const rsvpNameInput = document.getElementById("rsvpName");
         if (rsvpNameInput) rsvpNameInput.value = decodedGuestName;

@@ -58,31 +58,6 @@ def seed_data():
         ]
         db.add_all(wishes1)
 
-    # 3. Card 2: Thuy Linh (OU)
-    card2 = db.query(models.InvitationCard).filter(models.InvitationCard.slug == "thuy-linh-ttna-08").first()
-    if not card2:
-        card2 = models.InvitationCard(
-            slug="thuy-linh-ttna-08",
-            person_name="Nguyễn Thị Thùy Linh",
-            event_title="Lễ Tốt Nghiệp",
-            degree_title="Cử nhân Công nghệ Thông tin",
-            school_name="Trường Đại học Mở Tp.HCM",
-            event_date="2026-03-16T16:00:00",
-            event_location="Sảnh chờ Trường ĐH Mở Tp.HCM",
-            event_address="97 Võ Văn Tần, Phường Xuân Hoà, Tp.Hồ Chí Minh",
-            custom_message="Khoảnh khắc này cuối cùng cũng đã tới! Ngày 16/03/2026 đánh dấu mình hoàn thành chặng đường đại học. Rất mong các cậu ghé chụp hình chung vui!",
-            google_maps_embed="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3919.456215670252!2d106.690229!3d10.776328!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f3ae35e3725%3A0x20c5174a47f97be3!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBN4bufIFRQLkhDTSAtIEPGoSBz4bufIDE!5e0!3m2!1svi!2sus!4v1759059036225!5m2!1svi!2sus",
-            google_maps_link="https://www.google.com/maps/search/?api=1&query=Tr%C6%B0%E1%BB%9Dng+%C4%90%E1%BA%A1i+H%E1%BB%8Dc+M%E1%BB%9F+TP.HCM%2C+97+V%C3%B5+V%C4%83n+T%E1%BA%A3n%2C+Qu%E1%BA%ADn+3",
-            parking_info='[{"name": "Công viên Tao Đàn", "address": "Phường Bến Thành, Quận 1, Tp.HCM", "url": "https://congvientaodan.com/maps"}]',
-            music_url="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
-            hero_image="/static/assets/hero_nam.webp",
-            avatar_image="/uploads/avatar_default.jpg",
-            theme="mystery-noir"
-        )
-        db.add(card2)
-        db.commit()
-        db.refresh(card2)
-
     db.commit()
     db.close()
     print("Multi-card seed data initialized successfully!")
