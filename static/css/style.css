@@ -20,6 +20,7 @@
     --border-gold-subtle: rgba(201, 162, 75, 0.25);
     
     --font-heading: 'Playfair Display', serif;
+    --font-person-name: 'Cormorant Garamond', 'Times New Roman', serif;
     --font-hand: 'Dancing Script', cursive;
     --font-body: 'Quicksand', sans-serif;
     --font-baloo: 'Baloo 2', cursive, sans-serif;
@@ -53,6 +54,14 @@ body {
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 2px 5px rgba(201, 162, 75, 0.28));
+}
+
+/* Person name: solid gold avoids background-clip clipping Vietnamese diacritics (ễ, Ễ) */
+.person-name-gold {
+    color: #EBD489;
+    text-shadow:
+        0 1px 0 #D9B75B,
+        0 2px 10px rgba(201, 162, 75, 0.35);
 }
 
 /* ENVELOPE / COVER MODAL */
@@ -119,20 +128,19 @@ body {
 }
 
 .envelope-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-person-name);
     font-size: 40px;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.35;
     margin-top: 8px;
     margin-bottom: 28px;
-    letter-spacing: 0.03em;
-    /* Ensure proper Vietnamese character rendering */
-    font-feature-settings: "ss01", "ss02";
+    letter-spacing: 0.04em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Better centering */
     text-align: center;
     width: 100%;
+    overflow: visible;
+    padding: 0.08em 0;
 }
 
 .env-guest-badge {
@@ -327,19 +335,19 @@ body {
 }
 
 .hero-person-name {
-    font-family: var(--font-heading);
+    font-family: var(--font-person-name);
     font-size: 44px;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.35;
     margin-top: 8px;
     margin-bottom: 12px;
-    /* Ensure proper Vietnamese character rendering */
-    font-feature-settings: "ss01", "ss02";
+    letter-spacing: 0.04em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Better centering */
     text-align: center;
     width: 100%;
+    overflow: visible;
+    padding: 0.08em 0;
 }
 
 .hero-school {
