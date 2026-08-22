@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from database import SessionLocal, engine, Base
 import models
@@ -13,7 +14,7 @@ def seed_data():
         admin = models.AdminUser(passcode="123456")
         db.add(admin)
 
-    # 2. Card 1: Nguyen Hoai Nam (UTC)
+    # 2. Card 1: Nguyễn Hoài Nam (UTC)
     card1 = db.query(models.InvitationCard).filter(models.InvitationCard.slug == "nguyen-hoai-nam-f6034e").first()
     if not card1:
         card1 = models.InvitationCard(
