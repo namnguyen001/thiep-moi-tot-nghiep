@@ -6,8 +6,12 @@ import os
 # Use PostgreSQL DATABASE_URL if available (Render), otherwise use SQLite (local)
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
-    # PostgreSQL on Render
-    SQLALCHEMY_DATABASE_URL = DATABASE_URL
+    # PostgreSQL on Render using pg8000 driver
+    # Replace postgresql:// with postgresql+pg8000://
+    if DATABASE_URL.startswith("postgresql://"):
+        SQLALCHEMY_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+pg8000://")
+    else:
+        SQLALCHEMY_DATABASE_URL = DATABASE_URL
     engine = create_engine(SQLALCHEMY_DATABASE_URL)
 else:
     # SQLite for local development
