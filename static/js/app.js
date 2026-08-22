@@ -66,6 +66,16 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => toast.classList.remove("show"), 3500);
     }
 
+    function toVietnameseUpperCase(text) {
+        return text ? text.toLocaleUpperCase("vi-VN") : "";
+    }
+
+    function setPersonName(name) {
+        const displayName = toVietnameseUpperCase(name);
+        envPersonName.textContent = displayName;
+        heroPersonName.textContent = displayName;
+    }
+
     // Extract YouTube Video ID from any YouTube URL format
     function getYouTubeId(url) {
         if (!url) return null;
@@ -241,8 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cardData = await res.json();
 
             // Populate Text
-            envPersonName.textContent = cardData.person_name;
-            heroPersonName.textContent = cardData.person_name;
+            setPersonName(cardData.person_name);
             heroSchoolName.textContent = cardData.school_name;
             customMessage.textContent = cardData.custom_message;
 
