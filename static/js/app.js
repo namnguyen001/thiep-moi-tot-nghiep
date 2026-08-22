@@ -221,15 +221,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const guestRoleParam = urlParams.get("role") || urlParams.get("tag");
 
     if (guestNameParam) {
+        // Decode URL parameter to handle Vietnamese characters properly
+        const decodedGuestName = decodeURIComponent(guestNameParam);
+        const decodedGuestRole = guestRoleParam ? decodeURIComponent(guestRoleParam) : "";
+
         guestBanner.style.display = "flex";
-        guestBannerName.textContent = guestNameParam;
-        if (guestRoleParam) guestBannerRole.textContent = `(${guestRoleParam})`;
+        guestBannerName.textContent = decodedGuestName;
+        if (decodedGuestRole) guestBannerRole.textContent = `(${decodedGuestRole})`;
 
         envGuestBadge.style.display = "inline-block";
-        envGuestName.textContent = guestNameParam + (guestRoleParam ? ` (${guestRoleParam})` : "");
+        envGuestName.textContent = decodedGuestName + (decodedGuestRole ? ` (${decodedGuestRole})` : "");
 
         const rsvpNameInput = document.getElementById("rsvpName");
-        if (rsvpNameInput) rsvpNameInput.value = guestNameParam;
+        if (rsvpNameInput) rsvpNameInput.value = decodedGuestName;
     }
 
     // Fetch Card Details
