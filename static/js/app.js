@@ -10,9 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Extract Slug from path /t/{slug} or search query ?c=slug or default
     const pathname = window.location.pathname;
     let cardSlug = "";
+    let showCardsList = false;
 
     if (pathname.startsWith("/t/")) {
         cardSlug = pathname.split("/t/")[1];
+    } else if (pathname === "/" || pathname === "") {
+        // Show cards list on root path
+        showCardsList = true;
     } else {
         const urlParams = new URLSearchParams(window.location.search);
         cardSlug = urlParams.get("c") || urlParams.get("card") || "nguyen-hoai-nam-f6034e";
@@ -243,6 +247,53 @@ document.addEventListener("DOMContentLoaded", () => {
         if (rsvpNameInput) rsvpNameInput.value = decodedGuestName;
     }
 
+    // Show cards list or load single card
+    if (showCardsList) {
+        loadCardsList();
+    } else {
+        // Hide cards list section when loading single card
+        const cardsListSection = document.getElementById("cardsListSection");
+        if (cardsListSection) cardsListSection.style.display = "none";
+        loadCardData();
+    }
+
+    // Load Cards List
+    async function loadCardsList() {
+        try {
+            const res = await fetch("/api/cards");
+            if (!res.ok) return;
+            const cards = await res.json();
+
+            const cardsListSection = document.getElementById("cardsListSection");
+            const mainCardWrapper = document.querySelector(".main-card-wrapper");
+            const cardsListGrid = document.getElementById("cardsListGrid");
+
+            if (cards.length === 0) {
+                cardsListGrid.innerHTML = `<p style="text-align: center; color: var(--text-gold-muted); grid-column: 1/-1;">Chưa có thiệp mời nào được tạo.</p>`;
+            } else {
+                cardsListGrid.innerHTML = cards.map(card => `
+                    <div class="card-item" onclick="window.location.href='/t/${card.slug}'">
+                        <img src="${card.hero_image || '/uploads/hero_default.jpg'}" alt="${card.person_name}" class="card-image">
+                        <h3 class="card-person-name text-gold-gradient">${card.person_name}</h3>
+                        <p class="card-inviter-name">Người mời: ${card.inviter_name || card.person_name}</p>
+                        <p class="card-school">${card.school_name}</p>
+                        <p class="card-event-date">${new Date(card.event_date).toLocaleDateString('vi-VN')}</p>
+                        <button class="card-view-btn">
+                            <i class="fa-solid fa-eye"></i> Xem Thiệp
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            if (cardsListSection) cardsListSection.style.display = "flex";
+            if (mainCardWrapper) mainCardWrapper.style.display = "none";
+            if (envelopeOverlay) envelopeOverlay.style.display = "none";
+
+        } catch (err) {
+            console.error("Error loading cards list", err);
+        }
+    }
+
     // Fetch Card Details
     async function loadCardData() {
         try {
@@ -436,12 +487,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) return;
             const wishes = await res.json();
 
-            if (wishes.length === 0) {
+            // Only show displayed wishes
+            const displayedWishes = wishes.filter(w => w.is_displayed);
+
+            if (displayedWishes.length === 0) {
                 wishesList.innerHTML = `<p style="text-align: center; color: var(--gold-5); font-style: italic; font-size: 14px;">Hãy là người đầu tiên gửi lời chúc!</p>`;
                 return;
             }
 
-            wishesList.innerHTML = wishes.map(w => `
+            wishesList.innerHTML = displayedWishes.map(w => `
                 <div class="wish-card">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
                         <strong style="color: var(--gold-5); font-size: 14px;">${w.sender_name}</strong>

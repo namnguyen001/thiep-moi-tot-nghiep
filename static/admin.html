@@ -310,6 +310,10 @@
                         <input type="text" id="cfgPersonName" class="form-input" required>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Tên Người Mời (Tạo thiệp) *</label>
+                        <input type="text" id="cfgInviterName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Đường Link Slug (Viết liền không dấu, duy nhất) *</label>
                         <input type="text" id="cfgSlug" class="form-input" required>
                     </div>
@@ -474,6 +478,7 @@
                             <th>Người Gửi</th>
                             <th>Lời Chúc</th>
                             <th>Thời Gian</th>
+                            <th>Hiển Thị</th>
                             <th>Xóa</th>
                         </tr>
                     </thead>
@@ -496,6 +501,10 @@
                     <input type="text" id="newPersonName" class="form-input" placeholder="Ví dụ: Nguyễn Hoài Nam" required>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Tên Người Mời (Tạo thiệp) *</label>
+                    <input type="text" id="newInviterName" class="form-input" placeholder="Ví dụ: Nguyễn Hoài Nam" required>
+                </div>
+                <div class="form-group">
                     <label class="form-label">Slug Định Danh Link (Viết liền không dấu) *</label>
                     <input type="text" id="newSlug" class="form-input" placeholder="Ví dụ: nguyen-hoai-nam-utc" required>
                 </div>
@@ -516,6 +525,11 @@
                 <div class="form-group">
                     <label class="form-label">Địa Điểm Tổ Chức *</label>
                     <input type="text" id="newEventLocation" class="form-input" placeholder="Trường ĐH Giao Thông Vận Tải" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ảnh Bìa Tân Cử Nhân (Hero Image) *</label>
+                    <input type="file" id="newHeroFileInput" class="form-input" accept="image/*" required>
+                    <div id="newHeroPreview" style="margin-top: 8px;"></div>
                 </div>
                 <div style="display: flex; gap: 12px; margin-top: 20px;">
                     <button type="button" id="btnCloseNewCard" class="btn btn-secondary" style="flex: 1; justify-content: center;">HỦY</button>

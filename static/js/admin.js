@@ -200,10 +200,46 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("newSlug").value = val ? `${val}-${Math.floor(Math.random()*1000)}` : "";
     });
 
+    // Copy inviter name to person name by default
+    document.getElementById("newInviterName").addEventListener("input", (e) => {
+        if (!document.getElementById("newPersonName").value) {
+            document.getElementById("newPersonName").value = e.target.value;
+        }
+    });
+
+    // Handle hero image upload in create card modal
+    let newHeroImageUrl = "";
+    document.getElementById("newHeroFileInput").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await apiFetch("/api/upload", { method: "POST", body: formData });
+            const result = await res.json();
+            if (res.ok) {
+                newHeroImageUrl = result.url;
+                document.getElementById("newHeroPreview").innerHTML = `<img src="${result.url}" style="max-height: 100px; border-radius: 8px;">`;
+                showToast("Đã tải ảnh bìa!");
+            }
+        } catch (err) {
+            showToast("Lỗi tải ảnh bìa.");
+        }
+    });
+
     newCardForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
+        if (!newHeroImageUrl) {
+            alert("Vui lòng chọn ảnh bìa cho thiệp!");
+            return;
+        }
+
         const payload = {
             person_name: document.getElementById("newPersonName").value.trim(),
+            inviter_name: document.getElementById("newInviterName").value.trim(),
             slug: document.getElementById("newSlug").value.trim(),
             degree_title: document.getElementById("newDegreeTitle").value.trim() || "Cử nhân Công nghệ Thông tin",
             school_name: document.getElementById("newSchoolName").value.trim(),
@@ -215,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
             google_maps_link: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(document.getElementById("newEventLocation").value),
             parking_info: "[]",
             music_url: "https://youtu.be/3Kxf2dHlDpQ",
-            hero_image: "/uploads/hero_default.jpg",
+            hero_image: newHeroImageUrl,
             theme: "mystery-noir"
         };
 
@@ -230,6 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const createdCard = await res.json();
                 showToast("✨ Tạo thiệp mới thành công!");
                 newCardForm.reset();
+                newHeroImageUrl = "";
+                document.getElementById("newHeroPreview").innerHTML = "";
                 newCardModal.style.display = "none";
                 loadAllCards(createdCard.id);
             }
@@ -246,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Config Form Fields
         document.getElementById("cfgPersonName").value = activeCard.person_name || "";
+        document.getElementById("cfgInviterName").value = activeCard.inviter_name || "";
         document.getElementById("cfgSlug").value = activeCard.slug || "";
         document.getElementById("cfgDegreeTitle").value = activeCard.degree_title || "";
         document.getElementById("cfgSchoolName").value = activeCard.school_name || "";
@@ -295,6 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = {
             slug: document.getElementById("cfgSlug").value.trim(),
             person_name: document.getElementById("cfgPersonName").value.trim(),
+            inviter_name: document.getElementById("cfgInviterName").value.trim(),
             degree_title: document.getElementById("cfgDegreeTitle").value.trim(),
             school_name: document.getElementById("cfgSchoolName").value.trim(),
             event_date: document.getElementById("cfgEventDate").value,
@@ -583,7 +623,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const tbodyWishes = document.getElementById("wishesTableBody");
 
             if (wishes.length === 0) {
-                tbodyWishes.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #64748B;">Chưa có lời chúc nào.</td></tr>`;
+                tbodyWishes.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748B;">Chưa có lời chúc nào.</td></tr>`;
             } else {
                 tbodyWishes.innerHTML = wishes.map(w => `
                     <tr>
@@ -591,12 +631,39 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td>${w.message}</td>
                         <td>${new Date(w.created_at).toLocaleString('vi-VN')}</td>
                         <td>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" class="wish-display-toggle" data-id="${w.id}" ${w.is_displayed ? 'checked' : ''} style="width: 16px; height: 16px;">
+                                <span style="font-size: 12px; font-weight: 600; color: ${w.is_displayed ? '#166534' : '#991B1B'};">${w.is_displayed ? 'Có' : 'Không'}</span>
+                            </label>
+                        </td>
+                        <td>
                             <button class="btn btn-danger btn-delete-wish" data-id="${w.id}" style="font-size: 11px; padding: 4px 8px;">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
                     </tr>
                 `).join('');
+
+                // Toggle display status
+                document.querySelectorAll(".wish-display-toggle").forEach(checkbox => {
+                    checkbox.addEventListener("change", async () => {
+                        const id = checkbox.getAttribute("data-id");
+                        const isDisplayed = checkbox.checked;
+                        try {
+                            const res = await apiFetch(`/api/wishes/${id}`, {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ is_displayed: isDisplayed })
+                            });
+                            if (res.ok) {
+                                showToast(isDisplayed ? "Đã hiển thị lời chúc!" : "Đã ẩn lời chúc!");
+                                loadRSVPsAndWishes();
+                            }
+                        } catch (err) {
+                            showToast("Lỗi cập nhật trạng thái hiển thị.");
+                        }
+                    });
+                });
 
                 document.querySelectorAll(".btn-delete-wish").forEach(btn => {
                     btn.addEventListener("click", async () => {

@@ -15,6 +15,7 @@ class InvitationCard(Base):
     id = Column(Integer, primary_key=True, index=True)
     slug = Column(String, unique=True, index=True, nullable=False)
     person_name = Column(String, nullable=False, default="Nguyễn Hoài Nam")
+    inviter_name = Column(String, default="Nguyễn Hoài Nam")  # Tên người mời
     event_title = Column(String, default="Lễ Tốt Nghiệp")
     degree_title = Column(String, default="Cử nhân Công nghệ Thông tin")
     school_name = Column(String, default="Trường Đại Học Giao Thông Vận Tải")
@@ -83,6 +84,7 @@ class Wish(Base):
     sender_name = Column(String, nullable=False)
     message = Column(Text, nullable=False)
     avatar_index = Column(Integer, default=1)
+    is_displayed = Column(Boolean, default=True)  # Có hiển thị lời chúc này không
     created_at = Column(DateTime, default=datetime.utcnow)
 
     card = relationship("InvitationCard", back_populates="wishes")

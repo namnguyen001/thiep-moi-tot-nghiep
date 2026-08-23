@@ -189,6 +189,124 @@ body {
     border-right: 1px solid rgba(201, 162, 75, 0.15);
 }
 
+/* CARDS LIST SECTION */
+.cards-list-section {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    padding: 40px 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cards-list-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.cards-list-title {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cards-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.card-item {
+    background: linear-gradient(135deg, #17140C 0%, #0B0B0D 100%);
+    border: 1px solid rgba(201, 162, 75, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(201, 162, 75, 0.2);
+    border-color: rgba(201, 162, 75, 0.5);
+}
+
+.card-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold-5), var(--gold-dark));
+}
+
+.card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(201, 162, 75, 0.2);
+}
+
+.card-person-name {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-gold-light);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.card-inviter-name {
+    font-size: 14px;
+    color: var(--text-gold-muted);
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.card-school {
+    font-size: 13px;
+    color: var(--text-gold-muted);
+    margin-bottom: 8px;
+}
+
+.card-event-date {
+    font-size: 12px;
+    color: #C9A24B;
+    font-weight: 600;
+}
+
+.card-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 8px 16px;
+    background: linear-gradient(to right, var(--gold-5), var(--gold-dark));
+    color: #0B0B0D;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-view-btn:hover {
+    transform: scale(1.05);
+}
+
 /* DECORATIVE CORNER GRAPHICS */
 .decor-corner-cap {
     position: absolute;

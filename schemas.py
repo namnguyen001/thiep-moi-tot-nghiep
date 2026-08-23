@@ -6,6 +6,7 @@ from datetime import datetime
 class CardBase(BaseModel):
     slug: str
     person_name: str
+    inviter_name: Optional[str] = ""  # Tên người mời
     event_title: Optional[str] = "Lễ Tốt Nghiệp"
     degree_title: Optional[str] = "Cử nhân Công nghệ Thông tin"
     school_name: Optional[str] = "Trường Đại Học Giao Thông Vận Tải"
@@ -90,6 +91,7 @@ class WishCreate(BaseModel):
     sender_name: str
     message: str
     avatar_index: Optional[int] = 1
+    is_displayed: Optional[bool] = True  # Có hiển thị lời chúc này không
 
 class WishResponse(BaseModel):
     id: int
@@ -97,6 +99,7 @@ class WishResponse(BaseModel):
     sender_name: str
     message: str
     avatar_index: int
+    is_displayed: bool
     created_at: datetime
     class Config:
         from_attributes = True

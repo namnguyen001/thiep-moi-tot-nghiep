@@ -20,6 +20,7 @@ def seed_data():
         card1 = models.InvitationCard(
             slug="nguyen-hoai-nam-f6034e",
             person_name="Nguyễn Hoài Nam",
+            inviter_name="Nguyễn Hoài Nam",
             event_title="Lễ Tốt Nghiệp",
             degree_title="Kỹ sư Cầu Đường",
             school_name="Trường Đại Học Giao Thông Vận Tải",

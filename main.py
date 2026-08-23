@@ -293,6 +293,20 @@ def delete_wish(wish_id: int, db: Session = Depends(get_db), _: bool = Depends(v
     return {"message": "Đã xóa lời chúc"}
 
 
+@app.put("/api/wishes/{wish_id}")
+def update_wish(wish_id: int, wish_data: dict, db: Session = Depends(get_db), _: bool = Depends(verify_admin_token)):
+    wish = db.query(models.Wish).filter(models.Wish.id == wish_id).first()
+    if not wish:
+        raise HTTPException(status_code=404, detail="Lời chúc không tồn tại")
+    
+    if "is_displayed" in wish_data:
+        wish.is_displayed = wish_data["is_displayed"]
+    
+    db.commit()
+    db.refresh(wish)
+    return wish
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
