@@ -14,6 +14,17 @@ import schemas
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
 
+# Auto-migrate database to add new columns
+def run_migrations():
+    try:
+        import migrate
+        migrate.migrate_database()
+    except Exception as e:
+        print(f"Migration error (non-critical): {e}")
+
+# Run migrations on startup
+run_migrations()
+
 # Auto-seed data if database is empty
 def seed_database_if_empty():
     db = SessionLocal()
