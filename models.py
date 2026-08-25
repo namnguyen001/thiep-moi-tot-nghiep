@@ -58,6 +58,7 @@ class Guest(Base):
     role = Column(String, default="Bạn thân")
     code = Column(String, index=True)
     phone = Column(String, default="")
+    custom_image = Column(String, default="")  # Ảnh riêng cho khách mời này
     created_at = Column(DateTime, default=datetime.utcnow)
 
     card = relationship("InvitationCard", back_populates="guests")

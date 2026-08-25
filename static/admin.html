@@ -430,6 +430,37 @@
             </div>
 
             <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-image" style="color: var(--primary);"></i> Ảnh Riêng Cho Khách Mời</h3>
+                <form id="guestImageForm" style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;">
+                    <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
+                        <label class="form-label">Chọn Khách Mời *</label>
+                        <select id="guestSelectForImage" class="form-select" required>
+                            <option value="">-- Chọn khách mời --</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 200px; margin: 0;">
+                        <label class="form-label">Tải Ảnh Riêng</label>
+                        <input type="file" id="guestImageInput" class="form-input" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-upload"></i> CẬP NHẬT ẢNH
+                    </button>
+                </form>
+                <div id="guestImagePreview" style="margin-top: 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label class="form-label">Ảnh hiện tại:</label>
+                        <div id="currentGuestImageContainer" style="display: flex; align-items: center; gap: 12px;">
+                            <img id="currentGuestImage" src="" alt="Ảnh hiện tại" style="max-height: 100px; border-radius: 8px; display: none;">
+                            <span id="noGuestImageText" style="color: #64748B; font-size: 13px;">Chưa có ảnh riêng</span>
+                            <button id="btnRemoveGuestImage" class="btn btn-danger" style="font-size: 12px; padding: 4px 8px; display: none;">
+                                <i class="fa-solid fa-trash"></i> Xóa ảnh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
                 <h3 class="card-title"><i class="fa-solid fa-list-check" style="color: var(--primary);"></i> Danh Sách Khách Mời Thiệp Đang Chọn</h3>
                 <table class="data-table">
                     <thead>
@@ -437,6 +468,7 @@
                             <th>Tên Khách</th>
                             <th>Vai Trò</th>
                             <th>SĐT</th>
+                            <th>Ảnh Riêng</th>
                             <th>Đường Link Cá Nhân Hóa</th>
                             <th>Thao Tác</th>
                         </tr>

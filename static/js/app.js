@@ -228,10 +228,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Guest personalization
     const urlParams = new URLSearchParams(window.location.search);
     const guestNameParam = urlParams.get("guest");
+    let decodedGuestName = "";
 
     if (guestNameParam) {
         // Decode URL parameter to handle Vietnamese characters properly
-        const decodedGuestName = decodeURIComponent(guestNameParam);
+        decodedGuestName = decodeURIComponent(guestNameParam);
 
         guestBanner.style.display = "flex";
         guestBannerName.textContent = decodedGuestName;
@@ -245,6 +246,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load Card Data
     loadCardData();
+
+    // Load guest custom image from database
+    async function loadGuestCustomImage(guestName) {
+        try {
+            if (!cardData) return;
+            
+            const res = await fetch(`/api/cards/${cardData.id}/guests`);
+            if (!res.ok) return;
+            const guests = await res.json();
+            
+            // Find guest with matching name
+            const guest = guests.find(g => g.name === guestName);
+            if (guest && guest.custom_image && guest.custom_image !== "") {
+                heroImage.src = guest.custom_image;
+                console.log("Using custom image for guest:", guestName);
+            }
+        } catch (err) {
+            console.error("Error loading guest custom image:", err);
+        }
+    }
 
     // Fetch Card Details
     async function loadCardData() {
@@ -309,6 +330,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             loadWishes(cardData.id);
+
+            // Load custom image for guest if applicable
+            if (decodedGuestName) {
+                loadGuestCustomImage(decodedGuestName);
+            }
 
         } catch (err) {
             console.error("Error loading card data", err);

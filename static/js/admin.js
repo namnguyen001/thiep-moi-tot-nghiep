@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const configForm = document.getElementById("configForm");
     const uploadPhotoForm = document.getElementById("uploadPhotoForm");
     const addGuestForm = document.getElementById("addGuestForm");
+    const guestImageForm = document.getElementById("guestImageForm");
 
     function showToast(msg) {
         adminToast.textContent = msg;
@@ -469,11 +470,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tbody.innerHTML = guests.map(g => {
                 const guestUrl = `${origin}/t/${activeCard.slug}?guest=${encodeURIComponent(g.name)}${g.role ? `&role=${encodeURIComponent(g.role)}` : ''}`;
+                const hasCustomImage = g.custom_image && g.custom_image !== "";
                 return `
                     <tr>
                         <td><strong>${g.name}</strong></td>
                         <td><span style="background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${g.role || 'Khách'}</span></td>
                         <td>${g.phone || '-'}</td>
+                        <td>
+                            ${hasCustomImage 
+                                ? '<span style="color: #166534; font-weight: 600; font-size: 12px;"><i class="fa-solid fa-check"></i> Có ảnh</span>' 
+                                : '<span style="color: #991B1B; font-size: 12px;">Mặc định</span>'}
+                        </td>
                         <td>
                             <input type="text" value="${guestUrl}" readonly style="width: 280px; padding: 4px 8px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; background: #F8FAFC;">
                         </td>
@@ -531,8 +538,70 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
 
+            // Populate guest select dropdown for image upload
+            const guestSelectForImage = document.getElementById("guestSelectForImage");
+            guestSelectForImage.innerHTML = `<option value="">-- Chọn khách mời --</option>` + 
+                guests.map(g => `<option value="${g.id}">${g.name} (${g.role || 'Khách'})</option>`).join('');
+
+            // Set up guest selection change handler for image preview
+            guestSelectForImage.addEventListener("change", () => {
+                const guestId = guestSelectForImage.value;
+                if (guestId) {
+                    const guest = guests.find(g => g.id === parseInt(guestId));
+                    updateGuestImagePreview(guest);
+                } else {
+                    clearGuestImagePreview();
+                }
+            });
+
         } catch (err) {
             console.error(err);
+        }
+    }
+
+    function updateGuestImagePreview(guest) {
+        const currentGuestImage = document.getElementById("currentGuestImage");
+        const noGuestImageText = document.getElementById("noGuestImageText");
+        const btnRemoveGuestImage = document.getElementById("btnRemoveGuestImage");
+
+        if (guest && guest.custom_image && guest.custom_image !== "") {
+            currentGuestImage.src = guest.custom_image;
+            currentGuestImage.style.display = "block";
+            noGuestImageText.style.display = "none";
+            btnRemoveGuestImage.style.display = "inline-flex";
+            btnRemoveGuestImage.onclick = () => removeGuestImage(guest.id);
+        } else {
+            clearGuestImagePreview();
+        }
+    }
+
+    function clearGuestImagePreview() {
+        const currentGuestImage = document.getElementById("currentGuestImage");
+        const noGuestImageText = document.getElementById("noGuestImageText");
+        const btnRemoveGuestImage = document.getElementById("btnRemoveGuestImage");
+
+        currentGuestImage.style.display = "none";
+        noGuestImageText.style.display = "inline";
+        btnRemoveGuestImage.style.display = "none";
+    }
+
+    async function removeGuestImage(guestId) {
+        if (!confirm("Bạn có chắc chắn muốn xóa ảnh riêng của khách mời này?")) return;
+
+        try {
+            const res = await apiFetch(`/api/guests/${guestId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ custom_image: "" })
+            });
+
+            if (res.ok) {
+                showToast("Đã xóa ảnh riêng!");
+                clearGuestImagePreview();
+                loadGuests();
+            }
+        } catch (err) {
+            showToast("Lỗi xóa ảnh.");
         }
     }
 
@@ -566,6 +635,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btnCloseQr").addEventListener("click", () => {
         document.getElementById("qrModal").style.display = "none";
+    });
+
+    // Handle guest image upload
+    guestImageForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!activeCard) return;
+
+        const guestId = document.getElementById("guestSelectForImage").value;
+        const fileInput = document.getElementById("guestImageInput");
+
+        if (!guestId) {
+            alert("Vui lòng chọn khách mời!");
+            return;
+        }
+
+        let imageUrl = "";
+        
+        if (fileInput.files.length > 0) {
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+            
+            try {
+                const res = await apiFetch("/api/upload", { method: "POST", body: formData });
+                const result = await res.json();
+                if (res.ok) {
+                    imageUrl = result.url;
+                } else {
+                    showToast("Lỗi tải ảnh lên.");
+                    return;
+                }
+            } catch (err) {
+                showToast("Lỗi tải ảnh lên.");
+                return;
+            }
+        } else {
+            alert("Vui lòng chọn file ảnh!");
+            return;
+        }
+
+        try {
+            const res = await apiFetch(`/api/guests/${guestId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ custom_image: imageUrl })
+            });
+
+            if (res.ok) {
+                showToast("✅ Đã cập nhật ảnh cho khách mời!");
+                guestImageForm.reset();
+                // Reload guests to update the table
+                loadGuests();
+                // Update preview with the newly uploaded image after a short delay
+                setTimeout(() => {
+                    const guestSelectForImage = document.getElementById("guestSelectForImage");
+                    if (guestSelectForImage.value) {
+                        apiFetch(`/api/cards/${activeCard.id}/guests`).then(res => res.json()).then(guests => {
+                            const guest = guests.find(g => g.id === parseInt(guestId));
+                            updateGuestImagePreview(guest);
+                        });
+                    }
+                }, 300);
+            }
+        } catch (err) {
+            showToast("Lỗi cập nhật ảnh khách.");
+        }
     });
 
     // --- TAB 4: RSVPS & WISHES ---

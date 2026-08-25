@@ -39,6 +39,18 @@ def migrate_database():
         else:
             print("[OK] is_displayed column already exists")
         
+        # Check if custom_image column exists in guests
+        columns_guests = [col['name'] for col in inspector.get_columns('guests')]
+        
+        if 'custom_image' not in columns_guests:
+            print("Adding custom_image column to guests table...")
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE guests ADD COLUMN custom_image VARCHAR DEFAULT ''"))
+                conn.commit()
+            print("[OK] Added custom_image column")
+        else:
+            print("[OK] custom_image column already exists")
+        
         # Update existing invitation_cards to set inviter_name from person_name if empty
         print("Updating existing invitation_cards to set inviter_name...")
         with engine.connect() as conn:

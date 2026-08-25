@@ -54,6 +54,7 @@ class GuestCreate(BaseModel):
     name: str
     role: Optional[str] = "Bạn thân"
     phone: Optional[str] = ""
+    custom_image: Optional[str] = ""  # Ảnh riêng cho khách mời
 
 class GuestResponse(BaseModel):
     id: int
@@ -62,6 +63,7 @@ class GuestResponse(BaseModel):
     role: str
     code: str
     phone: str
+    custom_image: str
     created_at: datetime
     class Config:
         from_attributes = True
