@@ -464,7 +464,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const origin = window.location.origin;
 
             if (guests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748B;">Chưa có khách mời nào được tạo link cho thiệp này.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748B;">Chưa có khách mời nào được tạo link cho thiệp này.</td></tr>`;
                 return;
             }
 
@@ -477,12 +477,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td><span style="background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${g.role || 'Khách'}</span></td>
                         <td>${g.phone || '-'}</td>
                         <td>
-                            ${hasCustomImage 
-                                ? '<span style="color: #166534; font-weight: 600; font-size: 12px;"><i class="fa-solid fa-check"></i> Có ảnh</span>' 
+                            ${hasCustomImage
+                                ? '<span style="color: #166534; font-weight: 600; font-size: 12px;"><i class="fa-solid fa-check"></i> Có ảnh</span>'
                                 : '<span style="color: #991B1B; font-size: 12px;">Mặc định</span>'}
                         </td>
                         <td>
                             <input type="text" value="${guestUrl}" readonly style="width: 280px; padding: 4px 8px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; background: #F8FAFC;">
+                        </td>
+                        <td>
+                            <a href="${guestUrl}" target="_blank" class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px; background: #10B981;">
+                                <i class="fa-solid fa-eye"></i> Xem Thiệp
+                            </a>
                         </td>
                         <td>
                             <button class="btn btn-primary btn-copy-link" data-url="${guestUrl}" style="font-size: 11px; padding: 4px 8px;">
