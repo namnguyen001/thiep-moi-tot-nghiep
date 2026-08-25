@@ -259,10 +259,10 @@ def update_guest(guest_id: int, guest_data: dict, db: Session = Depends(get_db),
     guest = db.query(models.Guest).filter(models.Guest.id == guest_id).first()
     if not guest:
         raise HTTPException(status_code=404, detail="Khách mời không tồn tại")
-    
+
     if "custom_image" in guest_data:
         guest.custom_image = guest_data["custom_image"]
-    
+
     db.commit()
     db.refresh(guest)
     return guest

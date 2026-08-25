@@ -687,22 +687,21 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (res.ok) {
+                const updatedGuest = await res.json();
+                console.log("Updated guest response:", updatedGuest);
                 showToast("✅ Đã cập nhật ảnh cho khách mời!");
                 guestImageForm.reset();
                 // Reload guests to update the table
-                loadGuests();
-                // Update preview with the newly uploaded image after a short delay
-                setTimeout(() => {
-                    const guestSelectForImage = document.getElementById("guestSelectForImage");
-                    if (guestSelectForImage.value) {
-                        apiFetch(`/api/cards/${activeCard.id}/guests`).then(res => res.json()).then(guests => {
-                            const guest = guests.find(g => g.id === parseInt(guestId));
-                            updateGuestImagePreview(guest);
-                        });
-                    }
-                }, 300);
+                await loadGuests();
+                // Update preview with the newly uploaded image immediately
+                const guestSelectForImage = document.getElementById("guestSelectForImage");
+                if (guestSelectForImage.value) {
+                    // Use the updated guest response directly
+                    updateGuestImagePreview(updatedGuest);
+                }
             }
         } catch (err) {
+            console.error("Error updating guest image:", err);
             showToast("Lỗi cập nhật ảnh khách.");
         }
     });

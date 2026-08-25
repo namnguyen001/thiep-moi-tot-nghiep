@@ -251,16 +251,25 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadGuestCustomImage(guestName) {
         try {
             if (!cardData) return;
-            
+
             const res = await fetch(`/api/cards/${cardData.id}/guests`);
             if (!res.ok) return;
             const guests = await res.json();
-            
-            // Find guest with matching name
-            const guest = guests.find(g => g.name === guestName);
+
+            console.log("All guests:", guests);
+            console.log("Looking for guest:", guestName);
+
+            // Find guest with matching name (case-insensitive)
+            const guest = guests.find(g => g.name.toLowerCase() === guestName.toLowerCase());
+            console.log("Found guest:", guest);
+
             if (guest && guest.custom_image && guest.custom_image !== "") {
-                heroImage.src = guest.custom_image;
-                console.log("Using custom image for guest:", guestName);
+                // Add cache-busting timestamp to prevent image caching
+                const cacheBuster = `?t=${Date.now()}`;
+                heroImage.src = guest.custom_image + cacheBuster;
+                console.log("Using custom image for guest:", guestName, "Image URL:", guest.custom_image);
+            } else {
+                console.log("No custom image found for guest:", guestName);
             }
         } catch (err) {
             console.error("Error loading guest custom image:", err);
