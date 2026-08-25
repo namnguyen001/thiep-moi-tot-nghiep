@@ -230,7 +230,7 @@ def delete_photo(photo_id: int, db: Session = Depends(get_db), _: bool = Depends
 
 # --- GUESTS PER CARD ---
 @app.get("/api/cards/{card_id}/guests", response_model=List[schemas.GuestResponse])
-def get_card_guests(card_id: int, db: Session = Depends(get_db), _: bool = Depends(verify_admin_token)):
+def get_card_guests(card_id: int, db: Session = Depends(get_db)):
     return db.query(models.Guest).filter(models.Guest.card_id == card_id).order_by(models.Guest.id.desc()).all()
 
 

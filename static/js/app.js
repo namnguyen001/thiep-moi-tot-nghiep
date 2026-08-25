@@ -252,10 +252,16 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             if (!cardData) return;
 
+            console.log("Loading custom image for guest:", guestName);
             const res = await fetch(`/api/cards/${cardData.id}/guests`);
-            if (!res.ok) return;
-            const guests = await res.json();
+            console.log("Guest API response status:", res.status);
 
+            if (!res.ok) {
+                console.error("Failed to fetch guests, status:", res.status);
+                return;
+            }
+
+            const guests = await res.json();
             console.log("All guests:", guests);
             console.log("Looking for guest:", guestName);
 
